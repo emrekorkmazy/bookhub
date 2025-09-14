@@ -2,6 +2,7 @@ package com.example.bookhub.service;
 
 import com.example.bookhub.dto.CategoryDTO;
 import com.example.bookhub.entity.Category;
+import com.example.bookhub.mapper.CategoryMapper;
 import com.example.bookhub.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,41 +16,29 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-
-    // Entity -> DTO
-    private CategoryDTO toDTO(Category category) {
-        return new CategoryDTO(category.getId(), category.getName());
-    }
-
-    // DTO -> Entity
-    private Category toEntity(CategoryDTO dto) {
-        return Category.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .build();
-    }
+    private final CategoryMapper categoryMapper;
 
     public List<CategoryDTO> getAllCategories() {
         return categoryRepository.findAll()
                 .stream()
-                .map(this::toDTO)
+                .map(categoryMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     public Optional<CategoryDTO> getCategoryById(Long id) {
-        return categoryRepository.findById(id).map(this::toDTO);
+        return categoryRepository.findById(id).map(categoryMapper::toDTO);
     }
 
     public CategoryDTO createCategory(CategoryDTO dto) {
-        Category category = toEntity(dto);
-        return toDTO(categoryRepository.save(category));
+        Category category = categoryMapper.toEntity(dto);
+        return categoryMapper.toDTO(categoryRepository.save(category));
     }
 
     public CategoryDTO updateCategory(Long id, CategoryDTO dto) {
         return categoryRepository.findById(id)
                 .map(existing -> {
                     existing.setName(dto.getName());
-                    return toDTO(categoryRepository.save(existing));
+                    return categoryMapper.toDTO(categoryRepository.save(existing));
                 })
                 .orElseThrow(() -> new RuntimeException("Category not found"));
     }
