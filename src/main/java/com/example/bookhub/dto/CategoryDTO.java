@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CategoryDTO {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 }
