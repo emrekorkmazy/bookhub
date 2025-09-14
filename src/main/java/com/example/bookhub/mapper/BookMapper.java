@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public interface BookMapper {
     // Entity → DTO
     @Mapping(source = "category.id", target = "categoryId")
